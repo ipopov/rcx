@@ -46,6 +46,22 @@ Known Issues
 ------------
 - Reauthorization of OAuth remotes shows intermittent failures. This is currently under investigation.
 
+Testing
+-------
+The repository includes Robolectric unit and UI component test suites that run directly on the JVM without requiring an Android emulator or physical device.
+
+To run all unit and UI tests locally:
+
+```bash
+./gradlew test
+```
+
+Or to run tests specifically for the main app debug build variant:
+
+```bash
+./gradlew :app:testRcxDebugUnitTest
+```
+
 Contributing
 ------------
 See [CONTRIBUTING](./CONTRIBUTING.md)

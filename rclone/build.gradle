@@ -39,7 +39,8 @@ def configureNdk() {
     }
 
     if (ndkBasePath == null) {
-        throw new GradleException("NDK ${ext.ndkVersion} not found")
+        println("NDK ${ext.ndkVersion} not found - skipping native binary compilation steps")
+        return null
     }
 
     return ndkBasePath.resolve(Paths.get('toolchains', 'llvm', 'prebuilt', os, 'bin'))
@@ -53,6 +54,7 @@ def appLibPath = Paths.get(projectDir.absolutePath, '../app/lib').toAbsolutePath
 def ndkPrefix = configureNdk()
 
 task fetchRclone(type: Exec) {
+    enabled = (ndkPrefix != null)
     mkdir goPath
     environment 'GOPATH', goPath
     commandLine 'go', 'install', "${repositoryRef}"
@@ -68,9 +70,10 @@ task cleanNative {
 }
 
 task buildArm(type: Exec) {
+    enabled = (ndkPrefix != null)
     dependsOn fetchRclone
     environment 'GOPATH', goPath
-    def crossCompiler = ndkPrefix.resolve('armv7a-linux-androideabi21-clang')
+    def crossCompiler = ndkPrefix != null ? ndkPrefix.resolve('armv7a-linux-androideabi21-clang') : ''
     environment 'CC', crossCompiler
     environment 'CC_FOR_TARGET', crossCompiler
     environment 'GOOS', 'android'
@@ -84,9 +87,10 @@ task buildArm(type: Exec) {
 }
 
 task buildArm64(type: Exec) {
+    enabled = (ndkPrefix != null)
     dependsOn fetchRclone
     environment 'GOPATH', goPath
-    def crossCompiler = ndkPrefix.resolve('aarch64-linux-android21-clang')
+    def crossCompiler = ndkPrefix != null ? ndkPrefix.resolve('aarch64-linux-android21-clang') : ''
     environment 'CC', crossCompiler
     environment 'CC_FOR_TARGET', crossCompiler
     environment 'GOOS', 'android'
@@ -99,9 +103,10 @@ task buildArm64(type: Exec) {
 }
 
 task buildx86(type: Exec) {
+    enabled = (ndkPrefix != null)
     dependsOn fetchRclone
     environment 'GOPATH', goPath
-    def crossCompiler = ndkPrefix.resolve('i686-linux-android21-clang')
+    def crossCompiler = ndkPrefix != null ? ndkPrefix.resolve('i686-linux-android21-clang') : ''
     environment 'CC', crossCompiler
     environment 'CC_FOR_TARGET', crossCompiler
     environment 'GOOS', 'android'
@@ -114,9 +119,10 @@ task buildx86(type: Exec) {
 }
 
 task buildx64(type: Exec) {
+    enabled = (ndkPrefix != null)
     dependsOn fetchRclone
     environment 'GOPATH', goPath
-    def crossCompiler = ndkPrefix.resolve('x86_64-linux-android21-clang')
+    def crossCompiler = ndkPrefix != null ? ndkPrefix.resolve('x86_64-linux-android21-clang') : ''
     environment 'CC', crossCompiler
     environment 'CC_FOR_TARGET', crossCompiler
     environment 'GOOS', 'android'
