@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import ca.pkay.rcloneexplorer.util.FLog;
@@ -82,9 +83,13 @@ public class ActivityHelper {
 
     public static void tryStartService(@NonNull Context context, @NonNull Intent intent) {
         try {
-            context.startService(intent);
-        } catch (IllegalStateException e) {
-            FLog.e(TAG, "Host context state is invalid, not starting service", e);
+            ContextCompat.startForegroundService(context, intent);
+        } catch (Exception e) {
+            try {
+                context.startService(intent);
+            } catch (Exception ex) {
+                FLog.e(TAG, "Host context state is invalid, not starting service", ex);
+            }
         }
     }
 

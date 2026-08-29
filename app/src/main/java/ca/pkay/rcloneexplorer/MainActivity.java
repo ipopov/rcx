@@ -503,6 +503,14 @@ public class MainActivity extends AppCompatActivity
                 refresh.execute();
             }
         }
+        // Android 13+ requires runtime permission for notifications
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 0);
+            }
+        }
     }
 
     @Override

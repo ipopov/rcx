@@ -27,6 +27,7 @@ import ca.pkay.rcloneexplorer.BroadcastReceivers.DownloadCancelAction;
 import ca.pkay.rcloneexplorer.Items.FileItem;
 import ca.pkay.rcloneexplorer.Items.RemoteItem;
 import ca.pkay.rcloneexplorer.Log2File;
+import ca.pkay.rcloneexplorer.MainActivity;
 import ca.pkay.rcloneexplorer.R;
 import ca.pkay.rcloneexplorer.Rclone;
 import ca.pkay.rcloneexplorer.util.FLog;
@@ -51,6 +52,8 @@ public class DownloadService extends IntentService {
     private Rclone rclone;
     private Log2File log2File;
     private Process currentProcess;
+    private long lastNotificationTime = 0;
+    private static final long NOTIFICATION_THROTTLE_MS = 500; // max 2 updates/sec
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.*
@@ -93,7 +96,7 @@ public class DownloadService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean isLoggingEnable = sharedPreferences.getBoolean(getString(R.string.pref_key_logs), false);
         
-        Intent foregroundIntent = new Intent(this, DownloadService.class);
+        Intent foregroundIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, foregroundIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent cancelIntent = new Intent(this, DownloadCancelAction.class);
@@ -138,7 +141,11 @@ public class DownloadService extends IntentService {
                         log2File.log(line);
                     }
 
-                    updateNotification(downloadItem, notificationContent, notificationBigText);
+                    long now = System.currentTimeMillis();
+                    if (now - lastNotificationTime >= NOTIFICATION_THROTTLE_MS) {
+                        lastNotificationTime = now;
+                        updateNotification(downloadItem, notificationContent, notificationBigText);
+                    }
                 }
             } catch (InterruptedIOException e) {
                 FLog.d(TAG, "onHandleIntent: I/O interrupted, stream closed");
@@ -217,7 +224,7 @@ public class DownloadService extends IntentService {
             }
         }
 
-        Intent foregroundIntent = new Intent(this, DownloadService.class);
+        Intent foregroundIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, foregroundIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent cancelIntent = new Intent(this, DownloadCancelAction.class);
