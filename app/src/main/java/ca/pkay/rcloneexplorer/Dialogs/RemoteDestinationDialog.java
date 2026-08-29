@@ -137,7 +137,7 @@ public class RemoteDestinationDialog extends DialogFragment implements  SwipeRef
         }
 
         final TypedValue accentColorValue = new TypedValue ();
-        context.getTheme().resolveAttribute (R.attr.colorAccent, accentColorValue, true);
+        context.getTheme().resolveAttribute (com.google.android.material.R.attr.colorAccent, accentColorValue, true);
         view.findViewById(R.id.move_bar).setBackgroundColor(accentColorValue.data);
         view.findViewById(R.id.move_bar).setVisibility(View.VISIBLE);
         view.findViewById(R.id.cancel_move).setOnClickListener(v -> dismiss());

@@ -72,7 +72,7 @@ public class RemoteConfig extends AppCompatActivity implements RemotesConfigList
     private void applyTheme() {
         ActivityHelper.applyTheme(this);
         TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
+        getTheme().resolveAttribute(com.google.android.material.R.attr.colorPrimaryDark, typedValue, true);
         getWindow().setStatusBarColor(typedValue.data);
     }
 

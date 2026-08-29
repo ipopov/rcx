@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
-
+    compileSdk 35
+    namespace 'ca.pkay.safdav'
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
