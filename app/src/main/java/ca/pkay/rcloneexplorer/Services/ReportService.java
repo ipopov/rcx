@@ -155,10 +155,10 @@ public class ReportService extends Service {
         }
 
         Intent foregroundIntent = new Intent(this, ReportService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, foregroundIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, foregroundIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent stopIntent = new Intent(this, StopCollectionReceiver.class);
-        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, 0);
+        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_bug_report)
@@ -168,7 +168,11 @@ public class ReportService extends Service {
                 .addAction(R.drawable.ic_baseline_stop_24, getString(R.string.report_collection_stop_collection), cancelPendingIntent);
 
         setNotificationChannel();
-        startForeground(NOTIFICATION_ID, builder.build());
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            startForeground(NOTIFICATION_ID, builder.build(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+        } else {
+            startForeground(NOTIFICATION_ID, builder.build());
+        }
 
     }
 

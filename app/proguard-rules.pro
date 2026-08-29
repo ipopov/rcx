@@ -24,8 +24,11 @@
 # contributor are native libs which we can't shrink.
 -dontobfuscate
 
-# ignore okhttp conscrypt warning
--dontwarn okhttp3.internal.platform.ConscryptPlatform
+# ignore okhttp platform warnings
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
 
 # keep model classes
 # -keep public class ca.pkay.rcloneexplorer.RcloneRcd.*

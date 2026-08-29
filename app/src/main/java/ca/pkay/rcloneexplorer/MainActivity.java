@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity
                 .getBoolean(getString(R.string.pref_key_dark_theme), false);
         ActivityHelper.applyTheme(this);
         TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
+        getTheme().resolveAttribute(com.google.android.material.R.attr.colorPrimaryDark, typedValue, true);
         getWindow().setStatusBarColor(typedValue.data);
     }
 

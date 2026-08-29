@@ -62,10 +62,10 @@ public class DeleteService extends IntentService {
         String content = deleteItem.getName();
 
         Intent foregroundIntent = new Intent(this, DeleteService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, foregroundIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, foregroundIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent cancelIntent = new Intent(this, DeleteCancelAction.class);
-        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this, 0, cancelIntent, 0);
+        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this, 0, cancelIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -75,7 +75,11 @@ public class DeleteService extends IntentService {
                 .addAction(R.drawable.ic_cancel_download, getString(R.string.cancel), cancelPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
-        startForeground(PERSISTENT_NOTIFICATION_ID_FOR_DELETE, builder.build());
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            startForeground(PERSISTENT_NOTIFICATION_ID_FOR_DELETE, builder.build(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+        } else {
+            startForeground(PERSISTENT_NOTIFICATION_ID_FOR_DELETE, builder.build());
+        }
 
         currentProcess = rclone.deleteItems(remote, deleteItem);
         if (currentProcess != null) {
