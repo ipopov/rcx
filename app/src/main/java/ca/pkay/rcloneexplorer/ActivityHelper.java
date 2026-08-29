@@ -9,8 +9,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowInsetsController;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -100,10 +106,25 @@ public class ActivityHelper {
         Boolean isDarkTheme = sharedPreferences.getBoolean(context.getString(R.string.pref_key_dark_theme), false);
         context.getTheme().applyStyle(CustomColorHelper.getPrimaryColorTheme(context, customPrimaryColor), true);
         context.getTheme().applyStyle(CustomColorHelper.getAccentColorTheme(context, customAccentColor), true);
+        Window window = context.getWindow();
         if (isDarkTheme) {
             context.getTheme().applyStyle(R.style.DarkTheme, true);
+            window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#303030")));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                window.setNavigationBarColor(Color.TRANSPARENT);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                window.setNavigationBarContrastEnforced(false);
+            }
         } else {
             context.getTheme().applyStyle(R.style.LightTheme, true);
+            window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FAFAFA")));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                window.setNavigationBarColor(Color.TRANSPARENT);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                window.setNavigationBarContrastEnforced(false);
+            }
         }
 
         // set recents app color to the primary color

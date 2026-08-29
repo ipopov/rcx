@@ -60,6 +60,7 @@ freeline_project_description.json
 # Generated artifacts (apks, libraries) just slow down cloning and can be recreated from source
 # anyways.
 app/lib/
+app/src/main/jniLibs/
 release/
 
 .idea/encodings.xml
